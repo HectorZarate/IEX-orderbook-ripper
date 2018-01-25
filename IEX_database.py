@@ -16,6 +16,6 @@ class IEX_database:
 
 
 iex_db = IEX_database()
-test_post = a.post_data("aapl")
+test_post = iex_db.post_data("aapl")
 result = posts.insert_one(test_post)
 print('One Post: {0}'.format(result.inserted_id))
