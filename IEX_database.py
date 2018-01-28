@@ -1,21 +1,23 @@
-import csv, operator, glob, json, pprint, urllib, urllib.request, math, codecs
 from pymongo import MongoClient
+from pymongo import ReturnDocument
+from bson.objectid import ObjectId
+from pprint import pprint
 from IEX import iex
 
 
-client = MongoClient()
-db = client.pymongo_test
-posts = db.posts
+client = MongoClient('localhost', 27017)
+db = client.IEX_Database
+ticker_data_collections = db.posts
 
 
 class IEX_database:
-    def post_data(self, symbol):
+    def grab_ticker_data(self, symbol):
         iex_obj = iex()
         data = iex_obj.get_df_for_1y(symbol)
         return data
 
 
-iex_db = IEX_database()
-test_post = iex_db.post_data("aapl")
-result = posts.insert_one(test_post)
-print('One Post: {0}'.format(result.inserted_id))
+IEX_db = IEX_database()
+ticker_data = IEX_db.grab_ticker_data("aapl")
+post_data_to_db = ticker_data_collections.insert_one(ticker_data)
+print('Post ID: {0}'.format(post_data_to_db.inserted_id))
